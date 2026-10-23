@@ -1,0 +1,23 @@
+appId: com.plexocall.desktop
+productName: Plexocall
+copyright: Copyright © 2026 Plexocall contributors
+directories:
+  buildResources: build
+files:
+  - out/**/*
+  - package.json
+  - '!**/*.map'
+win:
+  executableName: plexocall
+  target:
+    - target: nsis
+      arch: [x64, arm64]
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: always
+  shortcutName: Plexocall
+protocols:
+  - name: Plexocall invitation
+    schemes: [plexocall]
+artifactName: ${productName}-${version}-${arch}-setup.${ext}

@@ -1,0 +1,52 @@
+name: plexocall-dev
+
+services:
+  database:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: plexocall
+      POSTGRES_USER: plexocall
+      POSTGRES_PASSWORD: plexocall-local-development-only
+    volumes:
+      - plexocall-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U plexocall -d plexocall"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  livekit:
+    image: livekit/livekit-server:v1.13.10
+    restart: unless-stopped
+    command: ["--config", "/etc/livekit.yaml"]
+    volumes:
+      - ./livekit.yaml:/etc/livekit.yaml:ro
+    ports:
+      - "127.0.0.1:7880:7880/tcp"
+      - "127.0.0.1:7881:7881/tcp"
+      - "127.0.0.1:7882:7882/udp"
+
+  control-api:
+    build:
+      context: ../..
+      dockerfile: services/control-api/Dockerfile
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      PORT: 8787
+      DATABASE_URL: postgres://plexocall:plexocall-local-development-only@database:5432/plexocall
+      LIVEKIT_API_URL: http://livekit:7880
+      LIVEKIT_PUBLIC_URL: ws://127.0.0.1:7880
+      LIVEKIT_API_KEY: dev-plexocall-key
+      LIVEKIT_API_SECRET: dev-plexocall-secret-only
+    depends_on:
+      database:
+        condition: service_healthy
+      livekit:
+        condition: service_started
+    ports:
+      - "127.0.0.1:8787:8787/tcp"
+
+volumes:
+  plexocall-db:

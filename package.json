@@ -1,0 +1,43 @@
+{
+  "name": "plexocall",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Windows-first self-hosted voice and video calling",
+  "main": "./out/main/index.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
+    "typecheck:web": "tsc --noEmit -p tsconfig.web.json --composite false",
+    "typecheck": "npm run typecheck:node && npm run typecheck:web",
+    "build": "npm run typecheck && electron-vite build",
+    "dist:win": "npm run build && electron-builder --win nsis",
+    "services:up": "docker compose -f infra/dev/compose.yaml up --build",
+    "services:down": "docker compose -f infra/dev/compose.yaml down"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@electron-toolkit/tsconfig": "^2.0.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/node": "^22.19.1",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.1",
+    "electron": "^44.4.4",
+    "electron-builder": "^26.16.1",
+    "electron-vite": "^5.0.0",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.6"
+  },
+  "dependencies": {
+    "@livekit/components-react": "^2.9.24",
+    "livekit-client": "^2.23.0",
+    "lucide-react": "^1.61.0",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1"
+  },
+  "allowScripts": {
+    "esbuild@0.25.12": true,
+    "esbuild@0.28.2": true
+  }
+}
