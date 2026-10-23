@@ -30,4 +30,4 @@ jobs:
         run: npm ci
 
       - name: Build Windows installers
-        run: npm run dist:win
+        run: npm run dist:win -- --publish never
